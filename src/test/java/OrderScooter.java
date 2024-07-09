@@ -1,3 +1,5 @@
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -14,6 +16,11 @@ import java.time.LocalDate;
 public class OrderScooter {
     private final String url = "https://qa-scooter.praktikum-services.ru/";
 
+    private WebDriver driver;
+    private MainPage objMainPage;
+    private OrderPage objOrderPage;
+    private RentPage objRentPage;
+
     private String firstName;
     private String secondName;
     private String adressName;
@@ -21,9 +28,7 @@ public class OrderScooter {
     private String telephoneNumber;
 
     static LocalDate currentDate = LocalDate.now();
-
     private int indexRentPeriod;
-
     private String commentForCourier;
 
     public OrderScooter(String firstName, String secondName, String adressName, int indexMetroStation, String telephoneNumber, LocalDate currentDate, int indexRentPeriod, String commentForCourier) {
@@ -44,28 +49,10 @@ public class OrderScooter {
         };
     }
 
-    @Test
-
-// Заказ самоката через кнопку заказа в середине сайта
-
-    public void orderBlackScooterThroughInMiddleButton() {
-
-        // создаем драйвер для браузера
-        WebDriver driver = new FirefoxDriver();
-        //WebDriver driver = new ChromeDriver();
-        driver.get(url);
-
-        // создаем объект класса главной страницы
-        MainPage objMainPage = new MainPage(driver);
-
-        // клик по кнопке куки
-        objMainPage.clickCoockieButton();
-
-        //клик по кнопке "Заказать" в середине сайта сайта
-        objMainPage.clickMiddleButtonOrder();
+    public void inputPersonInformationForOrder() {
 
         //создаем объект класса страницы заказа
-        OrderPage objOrderPage = new OrderPage(driver);
+        objOrderPage = new OrderPage(driver);
 
         // ввод имени
         objOrderPage.sendFirstName(firstName);
@@ -81,77 +68,12 @@ public class OrderScooter {
 
         // ввод номера телефона
         objOrderPage.sendNumberTelephone(telephoneNumber);
-
-        // жмём по кнопке далее
-        objOrderPage.clickButtonNext();
-
-        // создаем объект класса страницы с выбором аренды
-
-        RentPage objRentPage = new RentPage(driver);
-
-        // выбор даты аренды
-        objRentPage.dateDeliverly(String.valueOf(currentDate));
-
-        // выбор срока на который делается заказ аренды
-        objRentPage.choiseRentPeriod(indexRentPeriod);
-
-        // выбор чек-бокса с цветом Самоката
-        objRentPage.choiseColourBlackScooter();
-
-        //ввод комментария для курьера
-        objRentPage.sendCommentCourier(commentForCourier);
-
-        // клик по кнопке заказать
-        objRentPage.clickButtonOrder();
-
-        // клик по кнопке да в модальном окне подтверждения
-        objRentPage.clickButtonYes();
-
-        //проверка отображения модального окна с номером заказа
-        objRentPage.isDisplayModalOrder();
-
-        //закрытие браузера
-        driver.quit();
     }
-    @Test
-    public void orderScooterColourGreyTroughtButtonInHeader(){
-        // создаем драйвер для браузера
-        WebDriver driver = new FirefoxDriver();
-        // WebDriver driver = new ChromeDriver();
-        driver.get(url);
 
-        // создаем объект класса главной страницы
-        MainPage objMainPage = new MainPage(driver);
-
-        // клик по кнопке куки
-        objMainPage.clickCoockieButton();
-
-        // жмём по кнопке "Заказать" в хедере сайта
-        objMainPage.clickButtonHeaderButtonOrder();
-
-        // создаем объект класса страницы заказа
-        OrderPage objOrderPage= new OrderPage(driver);
-
-        // ввод имени
-        objOrderPage.sendFirstName(firstName);
-
-        // ввод фамилии
-        objOrderPage.sendSecondName(secondName);
-
-        // ввод адреса доставки
-        objOrderPage.adressDeliverly(adressName);
-
-        // выбор станции метро
-        objOrderPage.choiseMetro(indexMetroStation);
-
-        // ввод номера телефона
-        objOrderPage.sendNumberTelephone(telephoneNumber);
-
-        // клик по кнопке далее
-        objOrderPage.clickButtonNext();
+    public void inputRentInformationForOrder() {
 
         // создаем объект класса страницы с выбором аренды
-        RentPage objRentPage= new RentPage(driver);
+        objRentPage = new RentPage(driver);
 
         // ввод даты аренды
         objRentPage.dateDeliverly(String.valueOf(currentDate));
@@ -164,6 +86,72 @@ public class OrderScooter {
 
         // ввод комментария для курьера
         objRentPage.sendCommentCourier(commentForCourier);
+    }
+
+    @Before
+    public void openMainPage() {
+
+        // создаем драйвер для браузера
+        driver = new FirefoxDriver();
+        // WebDriver driver = new ChromeDriver();
+
+        // запускаем сайт
+        driver.get(url);
+
+        // создаем объект класса главной страницы
+        objMainPage = new MainPage(driver);
+
+        // жмём кнопку куки
+        objMainPage.clickCoockieButton();
+    }
+
+    @After
+    public void teardown() {
+
+        // Закрой браузер
+        driver.quit();
+    }
+
+    // Заказ самоката через кнопку заказа в середине сайта
+    @Test
+    public void orderBlackScooterThroughInMiddleButton() {
+
+        //клик по кнопке "Заказать" в середине сайта
+        objMainPage.clickMiddleButtonOrder();
+
+        // заполняем данные человека для заказа
+        inputPersonInformationForOrder();
+
+        // жмём по кнопке далее
+        objOrderPage.clickButtonNext();
+
+        // заполняем данные выбора аренды
+        inputRentInformationForOrder();
+
+        // жмём по кнопке заказа
+        objRentPage.clickButtonOrder();
+
+        // клик по кнопке да в модальном окне подтверждения
+        objRentPage.clickButtonYes();
+
+        //проверка отображения модального окна с номером заказа
+        objRentPage.isDisplayModalOrder();
+    }
+
+    @Test
+    public void orderScooterColourGreyTroughtButtonInHeader() {
+
+        // жмём по кнопке "Заказать" в хедере сайта
+        objMainPage.clickButtonHeaderButtonOrder();
+
+        // заполняем данные человека для заказа
+        inputPersonInformationForOrder();
+
+        // клик по кнопке далее
+        objOrderPage.clickButtonNext();
+
+        // заполняем данные выбора аренды
+        inputRentInformationForOrder();
 
         // жмём по кнопке заказа
         objRentPage.clickButtonOrder();
@@ -173,21 +161,5 @@ public class OrderScooter {
 
         // проверка отображения модального окна с номером заказа
         objRentPage.isDisplayModalOrder();
-
-        // закрытие браузера
-        driver.quit();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

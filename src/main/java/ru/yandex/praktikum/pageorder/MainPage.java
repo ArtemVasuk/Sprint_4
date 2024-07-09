@@ -12,19 +12,14 @@ import java.time.Duration;
 public class MainPage {
 
     private WebDriver driver;
-
     // локатор кнопки "Заказать" в header сайта
     private final By headerButtonOrder = By.className("Button_Button__ra12g");
-
     // локатор кнопки "Статус заказа"
     private final By buttonStatusOrder = By.className("Header_Link__1TAG7");
-
     // локатор кнопки "Заказать" в середине сайта
     private final By middleButtonOrder = By.className("Button_Middle__1CSJM");
-
     // локатор кнопки куки "Да все привыкли"
     private final By cookieButton = By.className("App_CookieButton__3cvqF");
-
     // локаторы выпадающего списка с вопросами
     public static final String[] arrayListOfQuestions = new String[]{
             "accordion__heading-0",
@@ -46,7 +41,6 @@ public class MainPage {
             "accordion__panel-5",
             "accordion__panel-6",
             "accordion__panel-7"
-
     };
 
     public MainPage(WebDriver driver) {

@@ -1,3 +1,5 @@
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -12,21 +14,23 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
     public class ListOfQuestionsTest {
-    private final String url = "https://qa-scooter.praktikum-services.ru/";
+        private final String url = "https://qa-scooter.praktikum-services.ru/";
 
+        private WebDriver driver;
+        private MainPage objMainPage;
 
-    private final String questionLocator;
-    private final String answerLocator;
-    private final String answerText;
+        private final String questionLocator;
+        private final String answerLocator;
+        private final String answerText;
 
-
-// создаем конструктор класса
-    public ListOfQuestionsTest(String questionLocator, String answerLocator, String answerText) {
-        this.questionLocator = questionLocator;
-        this.answerLocator = answerLocator;
-        this.answerText = answerText;
+        // создаем конструктор класса
+        public ListOfQuestionsTest(String questionLocator, String answerLocator, String answerText) {
+            this.questionLocator = questionLocator;
+            this.answerLocator = answerLocator;
+            this.answerText = answerText;
     }
-//пишем тестовые данные
+
+    //пишем тестовые данные
     @Parameterized.Parameters
     public static Object[][] expectedAnswersText() {
         return new Object[][]{
@@ -39,25 +43,34 @@ import static org.junit.Assert.assertEquals;
                 {MainPage.arrayListOfQuestions[6], MainPage.arrayAnswerFromTheList[6], "Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои."},
                 {MainPage.arrayListOfQuestions[7], MainPage.arrayAnswerFromTheList[7], "Да, обязательно. Всем самокатов! И Москве, и Московской области."},
         };
-        }
+    }
 
+    @Before
+    public void openMainPage() {
 
-
-    //сравнение полученного текств с текстом на сайте
-    @Test
-    public void comparingTextWithAnswer() {
         // создаем драйвер для браузера
-        WebDriver driver = new FirefoxDriver();
+        driver = new FirefoxDriver();
         // WebDriver driver = new ChromeDriver();
 
         // запускаем сайт
         driver.get(url);
 
         // создаем объект класса главной страницы
-        MainPage objMainPage = new MainPage(driver);
+        objMainPage = new MainPage(driver);
 
         // жмём кнопку куки "мы все уже поняли"
         objMainPage.clickCoockieButton();
+    }
+
+    @After
+    public void teardown() {
+
+        // Закрой браузер
+        driver.quit();
+    }
+
+    @Test
+    public void comparingTextWithAnswer() {
 
         // листаем до списка с вопросами
         objMainPage.scrollMainPageToTheListOfQuestions();
@@ -68,8 +81,5 @@ import static org.junit.Assert.assertEquals;
         // сравниваем ответ
         String actualAnswerText = driver.findElement(By.id(answerLocator)).getText();
         assertEquals("Полученный текст не соответствует тексту отображаемому на странице", answerText, actualAnswerText);
-
-        // закрываем браузер
-        driver.quit();
     }
 }

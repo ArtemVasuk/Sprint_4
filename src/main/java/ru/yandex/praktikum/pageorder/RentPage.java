@@ -34,19 +34,19 @@ public class RentPage {
     };
 
     //локатор чек-бокса "черный самокат"
-    private final By blackScooter=By.xpath(".//input[@id='black']");
+    private final By blackScooter = By.xpath(".//input[@id='black']");
 
     //локатор чек-бокса "серый самокат"
-    private final By greyScooter=By.xpath(".//input[@id='grey']");
+    private final By greyScooter = By.xpath(".//input[@id='grey']");
 
     //локатор поля "Комментарий для курьера"
-    private final By commentCourier=By.xpath(".//input[@placeholder='Комментарий для курьера']");
+    private final By commentCourier = By.xpath(".//input[@placeholder='Комментарий для курьера']");
 
     //локатор кнопки "Заказать" в середине страницы
     private final By buttonOrder = By.xpath(".//button[@class='Button_Button__ra12g Button_Middle__1CSJM']");
 
     //локатор кнопки "ДА" в модальном окне подтверждения заказа
-    private final By buttonYes= By.xpath("//*/div/div[2]/div[5]/div[2]/button[2]");
+    private final By buttonYes = By.xpath("//*/div/div[2]/div[5]/div[2]/button[2]");
 
     //локатор модального окна Успешно оформленного заказа
     private final By modalWindowOrder = By.xpath("//div[text()='Заказ оформлен']");
@@ -54,46 +54,48 @@ public class RentPage {
 
     // методы
     public RentPage(WebDriver driver) {
+
         this.driver = driver;
     }
 
     //метод выбора даты доставки
-    public void dateDeliverly(String date){
+    public void dateDeliverly(String date) {
         driver.findElement(whenToBringScooter).click();
         driver.findElement(whenToBringScooter).sendKeys(date);
         driver.findElement(whenToBringScooter).sendKeys(Keys.ENTER);
     }
+
     // метод выбора срока аренды
-    public void choiseRentPeriod(int period){
-      driver.findElement(rent).click();
-        new WebDriverWait(driver,Duration.ofSeconds(3))
+    public void choiseRentPeriod(int period) {
+        driver.findElement(rent).click();
+        new WebDriverWait(driver, Duration.ofSeconds(3))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(arrayTimeRent[period])));
         driver.findElement(By.xpath(arrayTimeRent[period])).click();
     }
 
     // метод выбора чекбокса черного цвета Самоката
-    public void choiseColourBlackScooter(){
+    public void choiseColourBlackScooter() {
         driver.findElement(blackScooter).click();
     }
 
     // метод выбора чекбокса серого цвета Самоката
-    public void choiseColourGreyScooter(){
+    public void choiseColourGreyScooter() {
         driver.findElement(greyScooter).click();
     }
 
     // метод заполнения поля комментарий для курьера
-    public void sendCommentCourier(String comment){
+    public void sendCommentCourier(String comment) {
         driver.findElement(commentCourier).click();
         driver.findElement(commentCourier).sendKeys(comment);
     }
 
     // метод нажатия кнопки "Заказать"
-    public void clickButtonOrder(){
+    public void clickButtonOrder() {
         driver.findElement(buttonOrder).click();
     }
 
     // метод нажатия кнопки "Да" в подтверждении заказа
-    public void clickButtonYes(){
+    public void clickButtonYes() {
         driver.findElement(buttonYes).click();
     }
 
